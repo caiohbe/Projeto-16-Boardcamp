@@ -1,12 +1,12 @@
 import joi from "joi"
 import connectionDB from "../database/db.js"
 
-const newCategorieSchema = joi.object({
+const newCategorySchema = joi.object({
     name: joi.string().required()
 })
 
-export default async function validateCategorie (req, res, next) {
-    const validation = newCategorieSchema.validate((req.body))
+export default async function validateCategory (req, res, next) {
+    const validation = newCategorySchema.validate(req.body)
 
     if (validation.error) {
         const errors = validation.error.details.map(detail => detail.message)
