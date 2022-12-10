@@ -6,18 +6,23 @@ const newCategorieSchema = joi.object({
 })
 
 export default async function validateCategorie (req, res, next) {
-    const validation = newCategorieSchema.validate((req.body, { abortEarly: false }))
+    const validation = newCategorieSchema.validate((req.body))
 
     if (validation.error) {
         const errors = validation.error.details.map(detail => detail.message)
-        res.status(422).send(errors)
+        res.status(400).send(errors)
         return
     }
 
     try {
         const categories = await connectionDB.query("SELECT * FROM categories;")
-        res.send(categories.rows)
+        
+        if (categories.rows.find(c => c.name === req.body.name)) {
+            res.sendStatus(409)
+            return
+        }
         return
+        
     } catch(err) {
         res.status(500).send(err.message)
     }
