@@ -7,6 +7,7 @@ export async function getCustomers(req, res) {
         customers = await connectionDB.query("SELECT * FROM customers;")
     } catch (err) {
         res.status(500).send(err.message)
+        return
     }
 
     if (req.query.name) {
@@ -28,14 +29,16 @@ export async function getCustomers(req, res) {
 export async function getCustomersById(req, res) {
     const id = req.params.id
     try {
-        const customers = await connectionDB.query("SELECT * FROM customers;")
-        const customer = customers.filter(c => c.id === id);
+        const customers = await connectionDB.query("SELECT * FROM customers;") 
+        const customer = customers.rows.filter(c => c.id === id);
 
         if (customer[0]) {
             res.send(customer)
-        } else [
+            return
+        } else {
             res.sendStatus(404)
-        ]
+            return
+        }
         
     } catch (err) {
         res.status(500).send(err.message)
