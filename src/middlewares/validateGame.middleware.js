@@ -11,7 +11,6 @@ const newGameSchema = joi.object({
 
 export async function validateGame(req, res, next) {
     const validation = newGameSchema.validate(req.body)
-    console.log(req.body)
 
     if (validation.error) {
         const errors = validation.error.details.map(detail => detail.message)
@@ -22,7 +21,7 @@ export async function validateGame(req, res, next) {
     try {
         const games = await connectionDB.query("SELECT * FROM games;")
         const categories = await connectionDB.query("SELECT * FROM categories;")
-        const categoriesIds = categories.rows.map((c) => c.id)
+        const categoriesIds = categories.rows.map(c => c.id)
 
         if(games.rows.find(g => g.name === req.body.name) || !categoriesIds.includes(req.body.categoryId)) {
             res.sendStatus(409)
