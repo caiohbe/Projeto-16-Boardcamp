@@ -21,11 +21,10 @@ export default async function validateCategory (req, res, next) {
             res.sendStatus(409)
             return
         }
-        return
         
     } catch(err) {
         res.status(500).send(err.message)
     }
-
+    
     next()
 }

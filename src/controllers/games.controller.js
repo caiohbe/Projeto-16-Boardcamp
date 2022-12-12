@@ -4,7 +4,7 @@ export async function getGames(req, res) {
     let games
 
     try {
-        games = await connectionDB.query("SELECT * FROM games;")
+        games = await connectionDB.query('SELECT games.*, categories.name AS "categoryName" FROM games JOIN categories ON games."categoryId" = categories.id;')
     } catch (err) {
         res.status(500).send(err.message)
     }

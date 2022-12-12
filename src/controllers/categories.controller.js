@@ -12,12 +12,10 @@ export async function getCategories(req, res) {
 
 export async function postCategories(req, res) {
     try {
-        const result = await connectionDB.query(
+        await connectionDB.query(
             "INSERT INTO categories (name) VALUES ($1)",
             [req.body.name]
         )
-
-        console.log(result)
 
         res.send(201)
     } catch(err) {
