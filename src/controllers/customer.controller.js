@@ -10,11 +10,11 @@ export async function getCustomers(req, res) {
         return
     }
 
-    if (req.query.name) {
+    if (req.query.cpf) {
         const cpf = req.query.cpf
     
         const result = customers.rows.filter((c) => {
-            if (c.cpf.includes(cpf)) {
+            if (c.cpf.slice(0, cpf.length) === cpf) {
                 return true
             }
         })
@@ -28,6 +28,7 @@ export async function getCustomers(req, res) {
 
 export async function getCustomersById(req, res) {
     const id = req.params.id
+
     try {
         const customers = await connectionDB.query("SELECT * FROM customers;") 
         const customer = customers.rows.filter(c => c.id == id);
@@ -47,6 +48,7 @@ export async function getCustomersById(req, res) {
 
 export async function postCustomer(req, res) {
     const { name, phone, cpf, birthday } = req.body
+
     try {
         await connectionDB.query("INSERT INTO customers (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4);",
         [name, phone, cpf, birthday])
