@@ -23,7 +23,12 @@ export async function validateGame(req, res, next) {
         const categories = await connectionDB.query("SELECT * FROM categories;")
         const categoriesIds = categories.rows.map(c => c.id)
 
-        if(games.rows.find(g => g.name === req.body.name) || !categoriesIds.includes(req.body.categoryId)) {
+        if (!categoriesIds.includes(req.body.categoryId)) {
+            res.sendStatus(400)
+            return
+        }
+
+        if (games.rows.find(g => g.name === req.body.name)) {
             res.sendStatus(409)
             return
         }
