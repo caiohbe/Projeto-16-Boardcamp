@@ -86,4 +86,9 @@ export async function getRentals (req, res){
     } catch (err){
         res.status(500).send(err.message)
     }
-};
+}
+
+export async function postRentalsById(req, res) {
+    res.sendStatus(200)
+    return
+}

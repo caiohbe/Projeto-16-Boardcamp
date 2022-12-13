@@ -34,3 +34,18 @@ export async function validateRental (req, res, next) {
 
     next()
 }
+
+export async function validateReturn (req, res, next) {
+    try {
+        const rentals = await connectionDB.query("SELECT * FROM rentals;")
+
+        if (!rentals.rows.find(e => e.id == req.params.id)) {
+            res.sendStatus(404)
+            return 
+        }
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+
+    next()
+}
