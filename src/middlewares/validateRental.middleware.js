@@ -55,3 +55,24 @@ export async function validateReturn (req, res, next) {
 
     next()
 }
+
+export async function validateDelete (req, res, next) {
+    try {
+        const rentals = await connectionDB.query("SELECT * FROM rentals;")
+        const deletingRental = rentals.rows.find(e => e.id == req.params.id)
+
+        if (!deletingRental) {
+            res.sendStatus(404)
+            return 
+        }
+
+        if (!deletingRental.returnDate) {
+            res.sendStatus(400)
+            return
+        }
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+
+    next()
+}

@@ -20,7 +20,6 @@ export async function postRentals(req, res) {
 
 export async function getRentals (req, res){
     const {customerId, gameId} = req.query
-    console.log(customerId, gameId)
 
     const rentalQuery = `
         SELECT 
@@ -96,8 +95,12 @@ export async function postRentalsById(req, res) {
         const rent = await connectionDB.query("SELECT * FROM rentals WHERE id=$1;",
         [id])
         const rentDate = (dayjs(rent.rows[0].rentDate).format("YYYY/MM/DD"))
-        const dayDiff = dayjs((new Date(today).getTime()) - (new Date(rentDate).getTime())).format("D")
+        let dayDiff = ((new Date(today).getTime()) - (new Date(rentDate).getTime()))
         const pricePerDay = ((rent.rows[0].originalPrice)/(rent.rows[0].daysRented))
+
+        if (dayDiff !== 0) {
+            dayDiff = dayjs(dayDiff).format("D")
+        }
         
         const delayFee = pricePerDay * dayDiff
 
@@ -106,6 +109,17 @@ export async function postRentalsById(req, res) {
 
         res.sendStatus(200)
 
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+export async function deleteRental(req, res) {
+    try {
+        await connectionDB.query("DELETE FROM rentals WHERE id=$1;",
+        [req.params.id])
+
+        res.sendStatus(200)
     } catch (err) {
         res.status(500).send(err.message)
     }
