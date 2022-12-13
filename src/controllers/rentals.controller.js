@@ -89,6 +89,24 @@ export async function getRentals (req, res){
 }
 
 export async function postRentalsById(req, res) {
-    res.sendStatus(200)
-    return
+    const id = req.params.id
+
+    try {
+        const today = dayjs(new Date()).format("YYYY/MM/DD")
+        const rent = await connectionDB.query("SELECT * FROM rentals WHERE id=$1;",
+        [id])
+        const rentDate = (dayjs(rent.rows[0].rentDate).format("YYYY/MM/DD"))
+        const dayDiff = dayjs((new Date(today).getTime()) - (new Date(rentDate).getTime())).format("D")
+        const pricePerDay = ((rent.rows[0].originalPrice)/(rent.rows[0].daysRented))
+        
+        const delayFee = pricePerDay * dayDiff
+
+        await connectionDB.query('UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3',
+        [today, delayFee, id])
+
+        res.sendStatus(200)
+
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
 }

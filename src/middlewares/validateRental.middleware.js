@@ -38,10 +38,16 @@ export async function validateRental (req, res, next) {
 export async function validateReturn (req, res, next) {
     try {
         const rentals = await connectionDB.query("SELECT * FROM rentals;")
+        const returningRental = rentals.rows.find(e => e.id == req.params.id)
 
-        if (!rentals.rows.find(e => e.id == req.params.id)) {
+        if (!returningRental) {
             res.sendStatus(404)
             return 
+        }
+
+        if (returningRental.returnDate) {
+            res.sendStatus(400)
+            return
         }
     } catch (err) {
         res.status(500).send(err.message)

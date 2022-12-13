@@ -6,6 +6,6 @@ const router = Router()
 
 router.post("/rentals", validateRental, postRentals)
 router.get("/rentals", getRentals)
-router.post('/rentals/:id/return', validateReturn,postRentalsById)
+router.post("/rentals/:id/return", validateReturn, postRentalsById)
 
 export default router
