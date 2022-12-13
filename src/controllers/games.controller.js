@@ -14,7 +14,7 @@ export async function getGames(req, res) {
         const name = req.query.name.toLowerCase()
     
         const result = games.rows.filter((g) => {
-            if (g.name.toLowerCase().includes(name)) {
+            if (g.name.toLowerCase().slice(0, name.length) === name) {
                 return true
             }
         })
